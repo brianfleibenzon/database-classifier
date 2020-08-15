@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  <title>Database Classifier</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">Database Classifier</a>
+  </nav>
+  <div class="container mt-3 text-center">
+    <h3>Database {{id}}</h3>
+    <div class="mt-3">
+      {% if database %}
+      {% set count = dict() %}
+      {% for schema in database.structure %}
+      <div class="card w-100 mb-4 bg-light">
+        <div class="card-header">
+          Schema: <b>{{ schema }}</b>
+        </div>
+        <div class="card-body">
+          {% for table in database.structure[schema] %}
+          <h4>{{ table }}</h4>
+          <table class="table table-striped mb-5">
+            <thead>
+              <tr>
+                <th scope="col">Column</th>
+                <th scope="col">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for column in database.structure[schema][table] %}
+              {% for type in database.structure[schema][table][column] %}
+              {% if type in count %}
+              {% set _dummy = count.update({type: count[type]+1}) %}
+              {% else %}
+              {% set _dummy = count.update({ type:1 }) %}
+              {% endif %}
+              {% endfor %}
+              <tr>
+                <td>{{ column }}</td>
+                <td>{{ database.structure[schema][table][column] | join(', ') | default('N/A', True) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="card w-100 mb-4 bg-success text-light">
+        <div class="card-header">
+          <b>STATISTICS</b>
+        </div>
+        <div class="card-body">
+          <table class="table table-striped mb-5 text-light">
+            <thead>
+              <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for type in count %}
+              <tr>
+                <td>{{ type }}</td>
+                <td>{{ count[type] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {% else %}
+      <h5>Error: The database was not found or it hasn't been scanned yet</h5>
+      {% endif %}
+    </div>
+  </div>
+</body>
+
+</html>
