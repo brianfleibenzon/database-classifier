@@ -57,8 +57,8 @@ def startScanDatabase(id):
 
     except mysql.connector.Error as err:                
         # Update history record with the error received and output the message
-        updateHistory(history.get("_id"), ExecutionStatus.ERROR, err.args)
-        raise ConnectionError(err.args)
+        updateHistory(history.get("_id"), ExecutionStatus.ERROR, err.msg)
+        raise ConnectionError(err.msg)
 
 
 def scanDatabase(id, historyId, mysqldb):
