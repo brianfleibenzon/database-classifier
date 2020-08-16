@@ -1,7 +1,7 @@
 from app.helpers.database import mongo
 from flask_jwt_extended import create_access_token
-import bcrypt
 from app.helpers.castJson import castJson
+from app.helpers.bcrypt import encrypt, validate
 
 def authenticate(username, password):
     # Validate required parameters
@@ -33,9 +33,3 @@ def register(username, password):
     # Generate hash of password and register user
     inserted_user = mongo.db.users.insert_one({"username": username, "password": encrypt(password)})
     return castJson(mongo.db.users.find_one({"_id": inserted_user.inserted_id}, {"password": False}))
-
-def encrypt(password):
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt(12)).decode()
-
-def validate(password, hashed):
-    return bcrypt.checkpw(password.encode(), hashed.encode())

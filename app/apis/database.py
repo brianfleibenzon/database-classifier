@@ -36,7 +36,7 @@ databaseOutput = api.model('Database', {
     'username': fields.String
 })
 
-@api.route("/view/<string:id>")
+@api.route("/scan/<string:id>/render")
 @api.param('id', 'Database ID')
 class DatabaseView(Resource):
     @api.response(200, 'Success')

@@ -21,69 +21,83 @@
     <h3>Database {{id}}</h3>
     <div class="mt-3">
       {% if database %}
-      {% set count = dict() %}
-      {% for schema in database.structure %}
-      <div class="card w-100 mb-4 bg-light">
-        <div class="card-header">
-          Schema: <b>{{ schema }}</b>
+        {% set type_count = dict() %}
+        {% set total = { "na": 0, "total": 0} %}
+        {% for schema in database.structure %}
+        <div class="card w-100 mb-4 bg-light">
+          <div class="card-header">
+            Schema: <b>{{ schema }}</b>
+          </div>
+          <div class="card-body">
+            {% for table in database.structure[schema] %}
+            <h4>{{ table }}</h4>
+            <table class="table table-striped mb-5">
+              <thead>
+                <tr>
+                  <th scope="col">Column</th>
+                  <th scope="col">Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for column in database.structure[schema][table] %}
+                  {% set _dummy = total.update({"total": total["total"]+1}) %}
+                  {% if database.structure[schema][table][column] | length == 0 %}
+                    {% set _dummy = total.update({"na": total["na"]+1}) %}
+                  {% endif %}
+                  {% for type in database.structure[schema][table][column] %}
+                    {% if type in type_count %}
+                      {% set _dummy = type_count.update({type: type_count[type]+1}) %}
+                    {% else %}
+                      {% set _dummy = type_count.update({ type:1 }) %}
+                    {% endif %}
+                  {% endfor %}
+                  <tr>
+                    <td>{{ column }}</td>
+                    <td>{{ database.structure[schema][table][column] | join(', ') | default('N/A', True) }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endfor %}
+          </div>
         </div>
-        <div class="card-body">
-          {% for table in database.structure[schema] %}
-          <h4>{{ table }}</h4>
-          <table class="table table-striped mb-5">
-            <thead>
-              <tr>
-                <th scope="col">Column</th>
-                <th scope="col">Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for column in database.structure[schema][table] %}
-              {% for type in database.structure[schema][table][column] %}
-              {% if type in count %}
-              {% set _dummy = count.update({type: count[type]+1}) %}
-              {% else %}
-              {% set _dummy = count.update({ type:1 }) %}
-              {% endif %}
-              {% endfor %}
-              <tr>
-                <td>{{ column }}</td>
-                <td>{{ database.structure[schema][table][column] | join(', ') | default('N/A', True) }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% endfor %}
-        </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
 
-      <div class="card w-100 mb-4 bg-success text-light">
-        <div class="card-header">
-          <b>STATISTICS</b>
+        <div class="card w-100 mb-4 bg-success text-light">
+          <div class="card-header">
+            <b>STATISTICS</b>
+          </div>
+          <div class="card-body">
+            <table class="table table-striped mb-5 text-light">
+              <thead>
+                <tr>
+                  <th scope="col">Type</th>
+                  <th scope="col">Count</th>
+                  <th scope="col">%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for type in type_count %}
+                <tr>
+                  <td>{{ type }}</td>
+                  <td>{{ type_count[type] }}</td>
+                  <td>{{ (type_count[type] * 100 / total["total"]) | round | int }}%</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td>N/A</td>
+                  <td>{{ total["na"] }}</td>
+                  <td>{{ (total["na"] * 100 / total["total"]) | round | int }}%</td>
+                </tr>
+                <tr>
+                  <td colspan="3">Total columns scanned: {{ total["total"] }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="card-body">
-          <table class="table table-striped mb-5 text-light">
-            <thead>
-              <tr>
-                <th scope="col">Type</th>
-                <th scope="col">Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for type in count %}
-              <tr>
-                <td>{{ type }}</td>
-                <td>{{ count[type] }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       {% else %}
-      <h5>Error: The database was not found or it hasn't been scanned yet</h5>
+        <h5>Error: The database was not found or it hasn't been scanned yet</h5>
       {% endif %}
     </div>
   </div>

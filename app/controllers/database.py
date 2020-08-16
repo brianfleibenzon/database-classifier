@@ -40,7 +40,7 @@ def startScanDatabase(id):
     history = addHistory(id)
 
     try:
-        # Connect to MySQL Server
+        # Try connecting to MySQL Server, so as in case of failure the error is retrieved synchronously
         mysqldb = mysql.connector.connect(
             host=database.get("host"),
             port=database.get("port"),
@@ -99,7 +99,6 @@ def scanDatabase(id, historyId, mysqldb):
 
     cursor.close()
     mysqldb.close()
-
 
 def getDatabase(id, fields = None):
     try:

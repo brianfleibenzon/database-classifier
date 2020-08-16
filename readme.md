@@ -85,7 +85,7 @@ As the process can take some time, a history object will be outputted which can 
 
 To view the last database scan, a GET request should be done to _/api/v1/database/scan/:DATABASE_ID_ endpoint. The history reference and the structure will be outputted.
 
-Also, _/api/v1/database/view/:DATABASE_ID_ can be navigated from a web broser to view the response as an HTML.
+Also, _/api/v1/database/scan/:DATABASE_ID_/render can be navigated from a web broser to view the response as an HTML.
 
 ### History
 
@@ -175,11 +175,11 @@ An example is provided for testing purposes. To execute it, follow the steps:
 
    The created database ID will be outputted.
 
-1. Start a scan by making a request to POST _/api/v1/database/scan/:id_. A history ID will be retrieved to check the execution status.
+1. Start a scan by making a request to POST _/api/v1/database/scan/:db\_id_. A history ID will be retrieved to check the execution status.
 
-1. Check the scan status by making a request to GET _/api/v1/history/:id_. Wait until status is 1.
+1. Check the scan status by making a request to GET _/api/v1/history/:history\_id_. Wait until status is 1.
 
-1. Get the results by calling GET _/api/v1/database/scan/:id_ or GET _/api/v1/database/view/:id_ if an HTML output is desired. The expected result should be:
+1. Get the results by calling GET _/api/v1/database/scan/:db\_id_ or GET _/api/v1/database/scan/:db\_id/render_ if an HTML output is desired. The expected result should be:
 
     | Schema  | Table        | Column      | Type          |
     | ------- | ------------ | ----------- | ------------- |

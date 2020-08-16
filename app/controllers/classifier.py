@@ -19,12 +19,11 @@ def addClassifier(name, regex):
 
     # Check if there is already a classifier created with the same name
     existingClassifier = mongo.db.classifiers.find_one({"name": re.compile(name, re.IGNORECASE)})
-
     if (existingClassifier is None):
       insertedClassifier = mongo.db.classifiers.insert_one({"name": name, "regex": regex})
       return getClassifier(insertedClassifier.inserted_id)
     else:
-      raise AttributeError("There is already a classifier with the name provided")           
+      raise ValueError("There is already a classifier with the name provided")           
 
 def getClassifier(id, fields=None):
     try:

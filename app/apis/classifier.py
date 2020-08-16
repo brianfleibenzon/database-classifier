@@ -21,6 +21,7 @@ class Classifier(Resource):
 
     @api.expect(classifierOutput)
     @api.response(400, 'Parameters invalid')
+    @api.response(409, 'There is already a classifier with the name provided')
     @api.response(201, 'Success', classifierOutput)
     @jwt_required
     def post(self):
@@ -34,3 +35,6 @@ class Classifier(Resource):
 
         except AttributeError as e:
             return {'msg': e.args[0]}, 400
+        
+        except ValueError as e:
+            return {'msg': e.args[0]}, 409
