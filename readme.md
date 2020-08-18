@@ -11,11 +11,11 @@ Databases Classifier is a Python application which enables to classify columns o
 
 1. Build Docker image replacing the required arguments.
 
-    | Argument                | Description                                                                  |
-    | ----------------------- | ---------------------------------------------------------------------------- |
-    | MONGO_CONNECTION_STRING | Connection string of MongoDB.                                                |
-    | CRYPTOGRAPHY_KEY        | A URL-safe base64-encoded 32-byte key use for encrypting database passwords. |
-    | JWT_KEY                 | Key used for signing JSON Web Tokens.                                        |
+    | Argument                | Description                                                                   |
+    | ----------------------- | ----------------------------------------------------------------------------- |
+    | MONGO_CONNECTION_STRING | Connection string of MongoDB.                                                 |
+    | CRYPTOGRAPHY_KEY        | A URL-safe base64-encoded 32-byte key used for encrypting database passwords. |
+    | JWT_KEY                 | Key used for signing JSON Web Tokens.                                         |
   
    ```shell
    docker build --build-arg MONGO_URI=<MONGO_CONNECTION_STRING> --build-arg CRYPTO_KEY=<CRYPTOGRAPHY_KEY> --build-arg JWT_KEY=<JWT_KEY> -t classifier-api .\
